@@ -44,9 +44,13 @@ namespace NServerNetLib
 			return BindListenRet;
 		}
 
+		//select의 읽기 셋을 초기화
 		FD_ZERO(&m_ReadFDs);
+
+		//ServerSocket을 읽기셋에 등록해줌
 		FD_SET(m_ServerSockFD, &m_ReadFDs);
 
+		//세션 풀을 만들어줌
 		CreateSessionPool(p_Config->MaxClientCount + p_Config->ExtraClientCount);
 
 		return NET_ERROR_CODE::NONE;
@@ -67,6 +71,7 @@ namespace NServerNetLib
 
 	void TcpNetwork::Run()
 	{
+		//읽기셋, 쓰기셋, 에러체크셋을 등록
 		auto Read_Set = m_ReadFDs;
 		auto Write_Set = m_ReadFDs;
 		auto Exc_Set = m_ReadFDs;
@@ -80,6 +85,8 @@ namespace NServerNetLib
 			return;
 		}
 
+
+		//현재 읽기셋에는 서버소켓이 들어있으므로, 서버소켓에 읽기가 왔따는것은 Client로 부터 Sync가 온것
 		if (FD_ISSET(m_ServerSockFD, &Read_Set))
 		{
 			NewSession();
@@ -92,10 +99,12 @@ namespace NServerNetLib
 
 	bool TcpNetwork::RunCheckSelectResult(const int Result)
 	{
+		//select가 return 값이 0이면 , time limit
 		if (Result == 0)
 		{
 			return false;
 		}
+		//요너석은 SCKET_ERROR과 같은데 이것은 에러발생했을떄 return 값
 		else if (Result == -1)
 		{
 			//error log
@@ -200,6 +209,7 @@ namespace NServerNetLib
 			return -1;
 		}
 
+		//현재 사용 가능한 세션이 있다면 해당 세션의 index를 알려준다
 		int Index = m_ClientSessionPoolIndex.front();
 		m_ClientSessionPoolIndex.pop_front();
 		
@@ -282,6 +292,8 @@ namespace NServerNetLib
 		}
 
 		char ClientIP[MAX_IP_LEN] = { 0, };
+
+		//2진수 ip주소를 dotted decimal 형태로 변환
 		inet_ntop(AF_INET, &(Client_Addr.sin_addr), ClientIP, MAX_IP_LEN - 1);
 
 		SetSockOption(Client_SockFD);
@@ -312,6 +324,8 @@ namespace NServerNetLib
 	void TcpNetwork::SetSockOption(const SOCKET FD)
 	{
 		linger ling;
+
+		//linger 옵션을 꺼줌으로써 우하한 종료가 일어나게끔 한다
 		ling.l_onoff = 0;
 		ling.l_linger = 0;
 		setsockopt(FD, SOL_SOCKET, SO_LINGER, (char*)&ling, sizeof(ling));
