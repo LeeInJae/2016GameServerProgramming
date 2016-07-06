@@ -325,7 +325,7 @@ namespace NServerNetLib
 	{
 		linger ling;
 
-		//linger 옵션을 꺼줌으로써 우하한 종료가 일어나게끔 한다
+		//linger 옵션을 꺼줌으로써 우아한 종료가 일어나게끔 한다
 		ling.l_onoff = 0;
 		ling.l_linger = 0;
 		setsockopt(FD, SOL_SOCKET, SO_LINGER, (char*)&ling, sizeof(ling));
@@ -338,26 +338,35 @@ namespace NServerNetLib
 
 	void TcpNetwork::CloseSession(const SOCKET_CLOSE_CASE CloseCase, const SOCKET SockFD, const int SessionIndex)
 	{
+		//세션이 꽉차서 어쩔 수 없이 커넥션을 끊어야할때 체크.
 		if (CloseCase == SOCKET_CLOSE_CASE::SESSION_POOL_EMPTY)
 		{
 			closesocket(SockFD);
 			FD_CLR(SockFD, &m_ReadFDs);
+
 			return;
 		}
 
+		//이미 연결이 끊어져있다면 리턴.
 		if (m_ClientSessionPool[SessionIndex].IsConnected() == false)
 		{
 			return;
 		}
 
+
+		//소켓 닫고
 		closesocket(SockFD);
 
+		//읽기 셋에서 빼줌.
 		FD_CLR(SockFD, &m_ReadFDs);
 
+		//세션 풀 다시 돌려놓고
 		m_ClientSessionPool[SessionIndex].Clear();
 		--m_ConnectedSessionCount;
 		ReleaseSessionIndex(SessionIndex);
 
+		//이것은 서버 내부적으로 패킷을 만드는것이다. 
+		//서버단에서 세션 해체를 위한 패킷 생성.
 		AddPacketQueue(SessionIndex, (short)PACKET_ID::NTF_SYS_CLOSE_SESSION, 0, nullptr);
 	}
 
@@ -452,6 +461,7 @@ namespace NServerNetLib
 		PacketInfo.PacketID			= PacketID;
 		PacketInfo.PacketBodySize	= BodySize;
 		PacketInfo.p_RefData		= p_DataPos;
+		//보통 내부에서 보낸것인가/ 외부에서 보낸것인가 체크하는 코드도 넣어주는 것이 좋다
 
 		m_PacketQueue.push_back(PacketInfo);
 	}

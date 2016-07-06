@@ -61,6 +61,9 @@ namespace NLogicLib
 
 		bool m_IsUsed = false;
 		std::wstring m_Title;
+
+
+		//Vector를 쓴 이유는 갯수가 적기때문에 그냥 써도 된다.(룸에 들어가는 Max User 수는 8명 이기에)
 		std::vector<User*> m_UserList;
 	};
 }

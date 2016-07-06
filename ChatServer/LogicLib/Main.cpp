@@ -66,6 +66,7 @@ namespace NLogicLib
 		m_IsRun = false;
 	}
 
+	//Running 스레드(worker)
 	void Main::Run()
 	{
 		while (m_IsRun)
@@ -74,16 +75,22 @@ namespace NLogicLib
 
 			while (true)
 			{
+				//패킷단위로 작업 처리
 				auto packetInfo = mp_Network->GetPacketInfo();
 
+				//패킷이 없으면 할일없음
 				if (packetInfo.PacketID == 0)
 				{
 					break;
 				}
 
+				//패킷있으면 처리
 				mp_PacketProc->Process(packetInfo);
 			}
 
+			//이게 없으면 CPU가 정말 정말 쉴새없이 돌아서 점유율이 하늘을 찌를 것이다.
+			//내가 진짜 별로 할게 없으면 다른 스레드에서 코어 쓰라는 형식
+			//즉 이함수롤 호출하면 이 스레드는 블락
 			std::this_thread::sleep_for(std::chrono::milliseconds(0));
 		}
 	}

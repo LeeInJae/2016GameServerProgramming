@@ -180,6 +180,42 @@ namespace NCommon
 		char UserID[MAX_USER_ID_SIZE + 1] = { 0, };
 		wchar_t Msg[MAX_ROOM_CHAT_MSG_SIZE + 1] = { 0, };
 	};
+
+	//- 로비 채팅
+	const int MAX_LOBBY_CHAT_MSG_SIZE = 256;
+	struct PktLobbyChatReq
+	{
+		wchar_t Msg[ MAX_LOBBY_CHAT_MSG_SIZE + 1 ] = { 0, };
+	};
+
+	struct PktLobbyChatRes : PktBase
+	{
+	};
+
+	struct PktLobbyChatNtf
+	{
+		char UserID[ MAX_USER_ID_SIZE + 1 ] = { 0, };
+		wchar_t Msg[ MAX_LOBBY_CHAT_MSG_SIZE + 1 ] = { 0, };
+	};
+
+
+	//- 로비 귓말 채팅
+	const int MAX_LOBBY_WHISPER_CHAT_MSG_SIZE = 256;
+	struct PktLobbyWhisperChatReq
+	{
+		wchar_t Msg[ MAX_LOBBY_WHISPER_CHAT_MSG_SIZE + 1 ] = { 0, };
+		char UserID[ MAX_USER_ID_SIZE + 1 ] = { 0, };
+	};
+
+	struct PktLobbyWhisperChatRes : PktBase
+	{
+	};
+
+	struct PktLobbyWhisperChatNtf
+	{
+		char UserID[ MAX_USER_ID_SIZE + 1 ] = { 0, };
+		wchar_t Msg[ MAX_LOBBY_WHISPER_CHAT_MSG_SIZE + 1 ] = { 0, };
+	};
 #pragma pack(pop)
 
 

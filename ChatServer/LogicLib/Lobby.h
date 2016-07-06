@@ -60,7 +60,8 @@ namespace NLogicLib
 
 		void NotifyLobbyLeaveUserInfo(User* pUser);
 
-
+		//현재 로비에서 사용하지않고있는 룸을 찾아서 반환
+		Room* CreateRoom( );
 		Room* GetRoom(const short roomIndex);
 
 		void NotifyChangedRoomInfo(const short roomIndex);
@@ -69,8 +70,12 @@ namespace NLogicLib
 
 		auto MaxRoomCount() { return (short)m_RoomList.size(); }
 
+		void NotifyChat( const int sessionIndex , const char* pszUserID , const wchar_t* pszMsg );
+
+		void WhisperChat( const int sessionIndex , const char* pszUserID , const wchar_t* pszMsg );
 	protected:
 		void SendToAllUser(const short packetId, const short dataSize, char* pData, const int passUserindex = -1);
+		void SendToUser( const short packetId , const short dataSize , char* pData , const int passUserindex = -1 );
 
 
 

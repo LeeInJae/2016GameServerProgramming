@@ -149,6 +149,36 @@ namespace NLogicLib
 		SendToAllUser((short)PACKET_ID::LOBBY_LEAVE_USER_NTF, sizeof(pkt), (char*)&pkt, pUser->GetIndex());
 	}
 
+	
+	Room* Lobby::CreateRoom( )
+	{
+		for(int i = 0; i < m_RoomList.size( ); ++i)
+		{
+			if(m_RoomList[ i ].IsUsed( ) == false) {
+				return &m_RoomList[ i ];
+			}
+		}
+		return nullptr;
+	}
+	
+
+	/*
+	Room* Lobby::CreateRoom( )
+	{
+		auto pCanUseRoom = std::find_if( std::begin( m_RoomList ) , std::end( m_RoomList ) , 
+			[ ]( auto& RoomElem )
+			{
+				if(RoomElem.IsUsed( ) == false)
+				{
+					return true;
+				}
+			} 
+		);
+
+		return (Room*)&pCanUseRoom;
+	}
+	*/
+
 	ERROR_CODE Lobby::SendRoomList(const int sessionId, const short startRoomId)
 	{
 		if (startRoomId < 0 || startRoomId >= (m_RoomList.size() - 1))
@@ -254,6 +284,10 @@ namespace NLogicLib
 		}
 	}
 
+	void SendToUser( const short packetId , const short dataSize , char* pData , const int passUserindex = -1 )
+	{
+
+	}
 	Room* Lobby::GetRoom(const short roomIndex)
 	{
 		if (roomIndex < 0 || roomIndex >= m_RoomList.size()) {
@@ -280,5 +314,33 @@ namespace NLogicLib
 		}
 
 		SendToAllUser((short)PACKET_ID::ROOM_CHANGED_INFO_NTF, sizeof(pktNtf), (char*)&pktNtf);
+	}
+
+	void Lobby::NotifyChat( const int sessionIndex , const char* pszUserID , const wchar_t* pszMsg )
+	{
+		NCommon::PktLobbyChatNtf pkt;
+
+		strncpy_s( pkt.UserID , _countof( pkt.UserID ) , pszUserID , NCommon::MAX_USER_ID_SIZE );
+
+		//MAX Chatting Size를 체크해야한다.!(악의적 목적이 있을 수 있다)
+		//도배금지하는 기능도 넣으면 좋다.(초당 채팅 한번만 보내야한다.)
+		//send 와 send 사이에 시간 체크하는 것이 좋다.
+		//필터링 기능도 있으면 좋다.
+		//클라이언트단에서 체크하는 경우가 대부분이다.(왜냐하면 아주 크리티컬한 것은 아니기때문이다)
+		//그리고 서버에서는 채팅내용들을 일정기간 저장해 놓아야한다.
+		wcsncpy_s( pkt.Msg , NCommon::MAX_LOBBY_CHAT_MSG_SIZE + 1 , pszMsg , NCommon::MAX_LOBBY_CHAT_MSG_SIZE );
+
+		//나를 뺸 나머지에게 모두 보내야한다. 그리고 성공했는지의 여부를 확인해야함.
+		SendToAllUser( ( short )PACKET_ID::LOBBY_CHAT_NTF , sizeof( pkt ) , ( char* )&pkt , sessionIndex );
+	}
+
+	void Lobby::WhisperChat(  const int sessionIndex , const char* pszUserID , const wchar_t* pszMsg )
+	{
+		NCommon::PktLobbyChatNtf pkt;
+
+		strncpy_s( pkt.UserID , _countof( pkt.UserID ) , pszUserID , NCommon::MAX_USER_ID_SIZE );
+		wcsncpy_s( pkt.Msg , NCommon::MAX_LOBBY_CHAT_MSG_SIZE + 1 , pszMsg , NCommon::MAX_LOBBY_CHAT_MSG_SIZE );
+
+		SendToAllUser( ( short )PACKET_ID::LOBBY_CHAT_NTF , sizeof( pkt ) , ( char* )&pkt , sessionIndex );
 	}
 }

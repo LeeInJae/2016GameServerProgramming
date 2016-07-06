@@ -17,12 +17,14 @@ namespace NLogicLib
 
 	void Room::Init(const short index, short int maxUserCount)
 	{
+		//룸의 Index와 해당 룸에서의 MaxUserCount를 정의
 		m_Index = index;
 		m_MaxUserCount = maxUserCount;
 	}
 
 	void Room::SetNetwork(TcpNet* pNetwork, ILog* pLogger)
 	{
+		//네트워크 클래스와 로그 클래스 설정
 		mp_RefNetwork = pNetwork;
 		mp_RefLogger = pLogger;
 	}
@@ -34,13 +36,16 @@ namespace NLogicLib
 		m_UserList.clear();
 	}
 
+	//방을 새로 만듦.
 	ERROR_CODE Room::CreateRoom(const wchar_t* pRoomTitle)
 	{
+		//새로 만들려고 하는 방이 이미 사용 중인 방이라면 이는 문제가 있다.
 		if (m_IsUsed)
 		{
 			return ERROR_CODE::ROOM_ENTER_CREATE_FAIL;
 		}
 
+		//방을 활성화시키고 타이틀 지정.
 		m_IsUsed = true;
 		m_Title = pRoomTitle;
 
@@ -81,6 +86,7 @@ namespace NLogicLib
 
 		if (m_UserList.empty())
 		{
+			//User가 아무도 없으면 이 방은 날려버림
 			Clear();
 		}
 
@@ -97,6 +103,9 @@ namespace NLogicLib
 				continue;
 			}
 
+			//List Box를 사용하여 채팅 메시지를 차곡차곡 쌓는게 좋다.
+			//보내는 사람 입장에서는 자기가 보낸게 성공하면 Text를 쌓아주고
+			//다시 받는 입장이라면 받는게 성공하면 listbox에 역시 추가하면 된다.
 			mp_RefNetwork->SendData(pUser->GetSessionIndex(), packetId, dataSize, pData);
 		}
 	}
@@ -127,8 +136,16 @@ namespace NLogicLib
 		NCommon::PktRoomChatNtf pkt;
 
 		strncpy_s(pkt.UserID, _countof(pkt.UserID), pszUserID, NCommon::MAX_USER_ID_SIZE);
+
+		//MAX Chatting Size를 체크해야한다.!(악의적 목적이 있을 수 있다)
+		//도배금지하는 기능도 넣으면 좋다.(초당 채팅 한번만 보내야한다.)
+		//send 와 send 사이에 시간 체크하는 것이 좋다.
+		//필터링 기능도 있으면 좋다.
+		//클라이언트단에서 체크하는 경우가 대부분이다.(왜냐하면 아주 크리티컬한 것은 아니기때문이다)
+		//그리고 서버에서는 채팅내용들을 일정기간 저장해 놓아야한다.
 		wcsncpy_s(pkt.Msg, NCommon::MAX_ROOM_CHAT_MSG_SIZE + 1, pszMsg, NCommon::MAX_ROOM_CHAT_MSG_SIZE);
 
+		//나를 뺸 나머지에게 모두 보내야한다. 그리고 성공핸쓴지의 여부를 확인해야함.
 		SendToAllUser((short)PACKET_ID::ROOM_CHAT_NTF, sizeof(pkt), (char*)&pkt, sessionIndex);
 	}
 }

@@ -63,10 +63,16 @@ namespace NLogicLib
 
 		ERROR_CODE LobbyLeave(PacketInfo packetInfo);
 
+		ERROR_CODE LobbyChat( PacketInfo packetInfo );
+
+		ERROR_CODE LobbyWhisperChat( PacketInfo packetInfo );
+
 		ERROR_CODE RoomEnter(PacketInfo packetInfo);
 
 		ERROR_CODE RoomLeave(PacketInfo packetInfo);
 
 		ERROR_CODE RoomChat(PacketInfo packetInfo);
+
+
 	};
 }

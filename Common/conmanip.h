@@ -548,7 +548,7 @@ namespace conmanip
 
    console_manipulator<COORD> setpos(int const x, int const y)
    {	
-      COORD c = {(short)x, (short)y};
+      COORD c = {x, y};
       return console_manipulator<COORD>(&_details::_setpos, c);
    }
 
