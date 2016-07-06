@@ -286,7 +286,12 @@ namespace NServerNetLib
 
 		SetSockOption(Client_SockFD);
 
+		FD_SET(Client_SockFD, &m_ReadFDs);
+
+		ConnectedSession(NewSessionIndex, (int)Client_SockFD, ClientIP);
+
 		std::cout << "new Session!";
+		
 		return NET_ERROR_CODE::NONE;
 	}
 
