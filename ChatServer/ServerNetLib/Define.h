@@ -75,6 +75,7 @@ namespace NServerNetLib
 		SOCKET_RECV_ERROR					= 3,
 		SOCKET_RECV_BUFFER_PROCESS_ERROR	= 4,
 		SOCKET_SEND_ERROR					= 5,
+		FORCING_CLOSE = 6,
 	};
 
 	enum class PACKET_ID : short

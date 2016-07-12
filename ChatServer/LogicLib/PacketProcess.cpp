@@ -6,6 +6,7 @@
 #include "Lobby.h"
 #include "LobbyManager.h"
 #include "PacketProcess.h"
+#include "ConnctedUserManager.h"
 
 using LOG_TYPE = NServerNetLib::LOG_TYPE;
 
@@ -20,6 +21,9 @@ namespace NLogicLib
 		m_pRefNetwork = pNetwork;
 		m_pRefUserMgr = pUserMgr;
 		m_pRefLobbyMgr = pLobbyMgr;
+
+		m_pConnectedUserManager = std::make_unique<ConnectedUserManager>( );
+		m_pConnectedUserManager->Init( pNetwork->ClientSessionPoolSize( ) , pNetwork , pLogger );
 
 		using netLibPacketId = NServerNetLib::PACKET_ID;
 		using commonPacketId = NCommon::PACKET_ID;
@@ -60,6 +64,16 @@ namespace NLogicLib
 		(this->*PacketFuncArray[packetId])(packetInfo);
 	}
 
+	void PacketProcess::StateCheck( )
+	{
+		m_pConnectedUserManager->LoginCheck( );
+	}
+
+	ERROR_CODE PacketProcess::NtfSysConnctSession( PacketInfo packetInfo )
+	{
+		m_pConnectedUserManager->SetConnectSession( packetInfo.SessionIndex );
+		return ERROR_CODE::NONE;
+	}
 
 	//서버 내부적으로 패킷을 만들어서 세션을 종료 시킴.
 	//반드시 해주어야하는 이유는 클라이언트(유저)쪽에서 종료 패킷 없이 연결이 없어졌거나 했을때
@@ -99,6 +113,7 @@ namespace NLogicLib
 			m_pRefUserMgr->RemoveUser(packetInfo.SessionIndex);
 		}
 
+		m_pConnectedUserManager->SetDisconnectSession( packetInfo.SessionIndex );
 
 		m_pRefLogger->Write(LOG_TYPE::L_INFO, "%s | NtfSysCloseSesson. sessionIndex(%d)", __FUNCTION__, packetInfo.SessionIndex);
 		return ERROR_CODE::NONE;

@@ -69,6 +69,20 @@ namespace NServerNetLib
 	
 	}
 
+	void TcpNetwork::Release( )
+	{
+		WSACleanup( );
+	}
+
+	void TcpNetwork::ForcingClose( const int sessionIndex )
+	{
+		if(m_ClientSessionPool[ sessionIndex ].IsConnected( ) == false) {
+			return;
+		}
+
+		CloseSession( SOCKET_CLOSE_CASE::FORCING_CLOSE , m_ClientSessionPool[ sessionIndex ].SocketFD , sessionIndex );
+	}
+
 	void TcpNetwork::Run()
 	{
 		//읽기셋, 쓰기셋, 에러체크셋을 등록

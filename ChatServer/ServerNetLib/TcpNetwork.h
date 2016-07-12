@@ -24,6 +24,11 @@ namespace NServerNetLib
 		void Run() override;
 		RecvPacketInfo GetPacketInfo() override;
 
+		void Release( ) override;
+
+		int ClientSessionPoolSize( ) override { return ( int )m_ClientSessionPool.size( ); }
+
+		void ForcingClose( const int sessionIndex );
 	protected:
 		NET_ERROR_CODE InitServerSocket();
 		NET_ERROR_CODE BindListen(short Port, int BacklogCount);

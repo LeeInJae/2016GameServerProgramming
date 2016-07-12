@@ -5,6 +5,7 @@
 #include "UserManager.h"
 #include "LobbyManager.h"
 #include "PacketProcess.h"
+#include "ConnctedUserManager.h"
 
 using PACKET_ID = NCommon::PACKET_ID;
 
@@ -15,6 +16,8 @@ namespace NLogicLib
 		CHECK_START
 			NCommon::PktLogInRes resPkt;
 		auto reqPkt = (NCommon::PktLogInReq*)packetInfo.p_RefData;
+
+		m_pConnectedUserManager->SetLogin( packetInfo.SessionIndex );
 
 		auto addRet = m_pRefUserMgr->AddUser(packetInfo.SessionIndex, reqPkt->szID);
 

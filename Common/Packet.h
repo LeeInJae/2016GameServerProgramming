@@ -195,6 +195,7 @@ namespace NCommon
 	struct PktLobbyChatNtf
 	{
 		char UserID[ MAX_USER_ID_SIZE + 1 ] = { 0, };
+		//messgae를 wchar로 하는 이유는?
 		wchar_t Msg[ MAX_LOBBY_CHAT_MSG_SIZE + 1 ] = { 0, };
 	};
 

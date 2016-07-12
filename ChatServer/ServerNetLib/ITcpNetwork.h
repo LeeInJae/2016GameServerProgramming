@@ -30,5 +30,11 @@ namespace NServerNetLib
 		{
 			return RecvPacketInfo();
 		}
+
+		virtual void Release( ) {}
+
+		virtual int ClientSessionPoolSize( ) { return 0; }
+
+		virtual void ForcingClose( const int sessionIndex ) {}
 	};
 }

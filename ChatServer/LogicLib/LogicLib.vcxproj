@@ -135,6 +135,7 @@
     <ClInclude Include="..\..\Common\ErrorCode.h" />
     <ClInclude Include="..\..\Common\Packet.h" />
     <ClInclude Include="..\..\Common\PacketID.h" />
+    <ClInclude Include="ConnctedUserManager.h" />
     <ClInclude Include="ConsoleLogger.h" />
     <ClInclude Include="Lobby.h" />
     <ClInclude Include="LobbyManager.h" />

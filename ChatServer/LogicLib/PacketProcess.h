@@ -3,6 +3,7 @@
 #include "../../Common/Packet.h"
 #include "../ServerNetLib/Define.h"
 #include "../../Common/ErrorCode.h"
+#include <memory>
 
 using ERROR_CODE = NCommon::ERROR_CODE;
 
@@ -20,7 +21,7 @@ namespace NLogicLib
 {
 	class UserManager;
 	class LobbyManager;
-
+	class ConnectedUserManager;
 #define CHECK_START  ERROR_CODE __result=ERROR_CODE::NONE;
 #define CHECK_ERROR(f) __result=f; goto CHECK_ERR;
 
@@ -41,14 +42,16 @@ namespace NLogicLib
 
 		void Process(PacketInfo packetInfo);
 
+		void StateCheck( );
 	private:
 		ILog* m_pRefLogger;
 		TcpNet* m_pRefNetwork;
 		UserManager* m_pRefUserMgr;
 		LobbyManager* m_pRefLobbyMgr;
 
-
+		std::unique_ptr<ConnectedUserManager> m_pConnectedUserManager;
 	private:
+		ERROR_CODE NtfSysConnctSession( PacketInfo packetInfo );
 		ERROR_CODE NtfSysCloseSesson(PacketInfo packetInfo);
 
 		ERROR_CODE Login(PacketInfo packetInfo);

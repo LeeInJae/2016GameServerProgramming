@@ -88,6 +88,7 @@ namespace NLogicLib
 				mp_PacketProc->Process(packetInfo);
 			}
 
+			mp_PacketProc->StateCheck( );
 			//이게 없으면 CPU가 정말 정말 쉴새없이 돌아서 점유율이 하늘을 찌를 것이다.
 			//내가 진짜 별로 할게 없으면 다른 스레드에서 코어 쓰라는 형식
 			//즉 이함수롤 호출하면 이 스레드는 블락
