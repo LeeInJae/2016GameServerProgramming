@@ -284,10 +284,23 @@ namespace NLogicLib
 		}
 	}
 
-	void SendToUser( const short packetId , const short dataSize , char* pData , const int passUserindex = -1 )
+	void Lobby::SendToUser( const short packetId , const short dataSize , char* pData , const int passUserindex)
 	{
+		for(auto& pUser : m_UserIndexDic)
+		{
+			//로비가 없는 녀석이면 안된다.
+			if(pUser.second->IsCurDomainInLobby( ) == false) {
+				continue;
+			}
 
+			if(pUser.second->GetIndex( ) == passUserindex) {
+				//보내자! 귓속말 왔다고!
+				m_pRefNetwork->SendData( pUser.second->GetSessionIndex( ) , packetId , dataSize , pData );
+				break;
+			}
+		}
 	}
+
 	Room* Lobby::GetRoom(const short roomIndex)
 	{
 		if (roomIndex < 0 || roomIndex >= m_RoomList.size()) {
@@ -334,13 +347,13 @@ namespace NLogicLib
 		SendToAllUser( ( short )PACKET_ID::LOBBY_CHAT_NTF , sizeof( pkt ) , ( char* )&pkt , sessionIndex );
 	}
 
-	void Lobby::WhisperChat(  const int sessionIndex , const char* pszUserID , const wchar_t* pszMsg )
+	void Lobby::WhisperChat(  const int sessionIndex , const char* pszUserID , const wchar_t* pszMsg, User* TargetUser )
 	{
 		NCommon::PktLobbyChatNtf pkt;
 
 		strncpy_s( pkt.UserID , _countof( pkt.UserID ) , pszUserID , NCommon::MAX_USER_ID_SIZE );
 		wcsncpy_s( pkt.Msg , NCommon::MAX_LOBBY_CHAT_MSG_SIZE + 1 , pszMsg , NCommon::MAX_LOBBY_CHAT_MSG_SIZE );
 
-		SendToAllUser( ( short )PACKET_ID::LOBBY_CHAT_NTF , sizeof( pkt ) , ( char* )&pkt , sessionIndex );
+		SendToUser( ( short )PACKET_ID::LOBBY_WHISPER_CHAT_NTF , sizeof( pkt ) , ( char* )&pkt , TargetUser->GetSessionIndex( ) );
 	}
 }

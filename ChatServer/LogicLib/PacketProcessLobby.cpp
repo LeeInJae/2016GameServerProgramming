@@ -207,12 +207,19 @@ namespace NLogicLib
 		auto reqPkt = ( NCommon::PktLobbyWhisperChatReq* )packetInfo.p_RefData;
 		NCommon::PktLobbyChatRes resPkt;
 
-		//유저 정보를 받아옴
+		//유저 정보를 받아옴(요건 귓속말을 요청한 녀석)
 		auto pUserRet = m_pRefUserMgr->GetUser( packetInfo.SessionIndex );
 		auto errorCode = std::get<0>( pUserRet );
 
 		if(errorCode != ERROR_CODE::NONE) {
 			CHECK_ERROR( errorCode );
+		}
+
+		auto pUser = std::get<1>( pUserRet );
+
+		//해당 유저가 현재의 로비에 있는지 확인.
+		if(pUser->IsCurDomainInLobby( ) == false) {
+			CHECK_ERROR( ERROR_CODE::LOBBY_WHISPER_CHAT_INVALID_DOMAIN );
 		}
 
 		//상대방을 미리 찾고, 로비가 서로 같은지 확인 후 Lobby의 SendToUser를 찾아서 보내준다.
@@ -223,21 +230,35 @@ namespace NLogicLib
 			CHECK_ERROR( errorCode );
 		}
 		
-		auto pUser = std::get<1>( pUserRet );
-
-		//해당 유저가 현재의 로비에 있는지 확인.
-		if(pUser->IsCurDomainInLobby( ) == false) {
+		//귓속말 대상자도 현재 로비에 있는지 확인
+		if(pWhisperTargetUser->IsCurDomainInLobby( ) == false)
+		{
 			CHECK_ERROR( ERROR_CODE::LOBBY_WHISPER_CHAT_INVALID_DOMAIN );
 		}
 
+		//현재 사용자의 로비 인덱스와 로비의 valid 검사
 		auto lobbyIndex = pUser->GetLobbyIndex( );
 		auto pLobby = m_pRefLobbyMgr->GetLobby( lobbyIndex );
 		if(pLobby == nullptr) {
 			CHECK_ERROR( ERROR_CODE::LOBBY_WHISPER_CHAT_INVALID_LOBBY_INDEX );
 		}
 
-		//룸 정보를 얻어와서 룸에 있는 유저들에게 메시지를 전달한다.
-		pLobby->NotifyChat( pUser->GetSessionIndex( ) , pUser->GetID( ).c_str( ) , reqPkt->Msg );
+		//귓속말 대상자의 로비 인덱스와 로비의 valid 검사
+		auto WhisperTargetLobbyIndex = pWhisperTargetUser->GetLobbyIndex( );
+		auto pWhisperTargetLobby = m_pRefLobbyMgr->GetLobby( WhisperTargetLobbyIndex );
+		if(pWhisperTargetLobby == nullptr)
+		{
+			CHECK_ERROR( ERROR_CODE::LOBBY_WHISPER_CHAT_INVALID_LOBBY_INDEX );
+		}
+
+		//로비 인덱스가 서로 다르면, 다른 로비에서의 귓속말을 원하는 것이므로 에러
+		if(WhisperTargetLobbyIndex != lobbyIndex)
+		{
+			CHECK_ERROR( ERROR_CODE::LOBBY_WHISPER_CHAT_NOT_EQUAL_LOBBY_INDEX );
+		}
+
+		//Lobby 정보를 얻어와서 Lobby에 있는 유저들 중 귓속말 유저에게 귓속말을 보냄.
+		pLobby->WhisperChat( pUser->GetSessionIndex( ) , pUser->GetID( ).c_str( ) , reqPkt->Msg, pWhisperTargetUser );
 
 		//ROOM_CHAT_RES 패킷을 보낸다.
 		m_pRefNetwork->SendData( packetInfo.SessionIndex , ( short )PACKET_ID::LOBBY_WHISPER_CHAT_RES , sizeof( resPkt ) , ( char* )&resPkt );

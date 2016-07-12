@@ -145,7 +145,7 @@ namespace NLogicLib
 		//그리고 서버에서는 채팅내용들을 일정기간 저장해 놓아야한다.
 		wcsncpy_s(pkt.Msg, NCommon::MAX_ROOM_CHAT_MSG_SIZE + 1, pszMsg, NCommon::MAX_ROOM_CHAT_MSG_SIZE);
 
-		//나를 뺸 나머지에게 모두 보내야한다. 그리고 성공핸쓴지의 여부를 확인해야함.
+		//나를 뺸 나머지에게 모두 보내야한다. 그리고 성공했는지의 여부를 확인해야함.
 		SendToAllUser((short)PACKET_ID::ROOM_CHAT_NTF, sizeof(pkt), (char*)&pkt, sessionIndex);
 	}
 }

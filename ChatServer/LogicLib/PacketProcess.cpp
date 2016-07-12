@@ -40,7 +40,7 @@ namespace NLogicLib
 		PacketFuncArray[ ( int )commonPacketId::LOBBY_CHAT_REQ ] = &PacketProcess::LobbyChat;
 
 		//±Ó¼Ó¸»
-		//PacketFuncArray[ ( int )commonPacketId::LOBBY_WHISPER_CHAT_REQ ] = &PacketProcess::LobbyWhisperChat;
+		PacketFuncArray[ ( int )commonPacketId::LOBBY_WHISPER_CHAT_REQ ] = &PacketProcess::LobbyWhisperChat;
 		PacketFuncArray[(int)commonPacketId::LOBBY_LEAVE_REQ] = &PacketProcess::LobbyLeave;
 		PacketFuncArray[(int)commonPacketId::ROOM_ENTER_REQ] = &PacketProcess::RoomEnter;
 		PacketFuncArray[(int)commonPacketId::ROOM_LEAVE_REQ] = &PacketProcess::RoomLeave;

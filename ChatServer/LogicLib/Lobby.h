@@ -72,7 +72,7 @@ namespace NLogicLib
 
 		void NotifyChat( const int sessionIndex , const char* pszUserID , const wchar_t* pszMsg );
 
-		void WhisperChat( const int sessionIndex , const char* pszUserID , const wchar_t* pszMsg );
+		void WhisperChat( const int sessionIndex , const char* pszUserID , const wchar_t* pszMsg, User* TargetUser);
 	protected:
 		void SendToAllUser(const short packetId, const short dataSize, char* pData, const int passUserindex = -1);
 		void SendToUser( const short packetId , const short dataSize , char* pData , const int passUserindex = -1 );
