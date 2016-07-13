@@ -49,6 +49,12 @@ namespace NLogicLib
 		PacketFuncArray[(int)commonPacketId::ROOM_ENTER_REQ] = &PacketProcess::RoomEnter;
 		PacketFuncArray[(int)commonPacketId::ROOM_LEAVE_REQ] = &PacketProcess::RoomLeave;
 		PacketFuncArray[(int)commonPacketId::ROOM_CHAT_REQ] = &PacketProcess::RoomChat;
+
+		//방장의 게임 시작
+		PacketFuncArray[ ( int )commonPacketId::ROOM_MASTER_GAME_START_REQ ] = &PacketProcess::RoomMasterGameStart;
+
+		//방장아 아닌 유저들의 게임 시작 요청(레디 버튼클릭)
+		PacketFuncArray[ ( int )commonPacketId::ROOM_GAME_START_REQ ] = &PacketProcess::RoomGameStart;
 	}
 
 	void PacketProcess::Process(PacketInfo packetInfo)

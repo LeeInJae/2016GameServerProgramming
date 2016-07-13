@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <string>
-
+#include <memory>
 #include "User.h"
 
 namespace NServerNetLib { class ITcpNetwork; }
@@ -15,6 +15,8 @@ namespace NLogicLib
 {
 	using TcpNet = NServerNetLib::ITcpNetwork;
 	using ILog = NServerNetLib::ILog;
+
+	class Game;
 
 	class Room
 	{
@@ -52,6 +54,14 @@ namespace NLogicLib
 
 		void NotifyChat(const int sessionIndex, const char* pszUserID, const wchar_t* pszMsg);
 
+
+		bool IsMaster( )
+		{
+			return true;
+		}
+
+		Game* GetGameObj( );
+		void Update( );
 	private:
 		ILog* mp_RefLogger;
 		TcpNet* mp_RefNetwork;
@@ -65,5 +75,7 @@ namespace NLogicLib
 
 		//Vector를 쓴 이유는 갯수가 적기때문에 그냥 써도 된다.(룸에 들어가는 Max User 수는 8명 이기에)
 		std::vector<User*> m_UserList;
+
+		std::unique_ptr<Game> m_pGame;
 	};
 }

@@ -103,6 +103,8 @@ namespace NLogicLib
 		bool IsCurDomainInRoom() {
 			return m_CurDomainState == DOMAIN_STATE::ROOM ? true : false;
 		}
+
+
 	protected:
 		short m_Index = -1;
 		int m_SessionIndex = -1;

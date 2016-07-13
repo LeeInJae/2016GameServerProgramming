@@ -20,6 +20,8 @@ namespace NLogicLib
 		//룸의 Index와 해당 룸에서의 MaxUserCount를 정의
 		m_Index = index;
 		m_MaxUserCount = maxUserCount;
+
+		m_pGame = std::make_unique<Game>( );
 	}
 
 	void Room::SetNetwork(TcpNet* pNetwork, ILog* pLogger)
@@ -34,6 +36,11 @@ namespace NLogicLib
 		m_IsUsed = false;
 		m_Title = L"";
 		m_UserList.clear();
+	}
+
+	Game* Room::GetGameObj( )
+	{
+		return m_pGame.get( );
 	}
 
 	//방을 새로 만듦.
@@ -148,4 +155,19 @@ namespace NLogicLib
 		//나를 뺸 나머지에게 모두 보내야한다. 그리고 성공했는지의 여부를 확인해야함.
 		SendToAllUser((short)PACKET_ID::ROOM_CHAT_NTF, sizeof(pkt), (char*)&pkt, sessionIndex);
 	}
+
+	void Room::Update( )
+	{
+		if(m_pGame->GetState( ) == GameState::ING)
+		{
+			if(m_pGame->CheckSelectTime( ))
+			{
+				//선택 안하는 사람이 지도록 한다.
+				//로비에서도 업데이트를 호출하여 모든 방을 확인해보아야한다.(LobbyManager에 update함수 만들어서 사용)
+				//한번에 모든 로비가 아니라, 특정 시간당 로비 하나씩 하나씩 순차적으로 검사.
+				//다시 정리하면 로비 매니저에서는 한번에 모든 로비를 조사하지 말것.(서버에 부하가 갈 수 있음)
+			}
+		}
+	}
+	
 }

@@ -217,6 +217,38 @@ namespace NCommon
 		char UserID[ MAX_USER_ID_SIZE + 1 ] = { 0, };
 		wchar_t Msg[ MAX_LOBBY_WHISPER_CHAT_MSG_SIZE + 1 ] = { 0, };
 	};
+
+	//방장의 게임 시작 요청
+	//게임 시작할땐 데이터가 없다.
+	struct PktRoomMasterGameStartReq
+	{
+	};
+
+	struct PktRoomMasterGameStartRes : PktBase
+	{
+	};
+
+	//알림할때도 알려줄 데이터는 없다.
+	struct PktRoomMasterGameStartNtf
+	{
+
+	};
+	///////////////////////////////////////////////
+
+	struct PktRoomGameStartReq
+	{
+	};
+
+	struct PktRoomGameStartRes : PktBase
+	{
+	};
+
+
+	//알림할때도 알려줄 데이터는 없다.
+	struct PktRoomGameStartNtf
+	{
+		char UserID[ MAX_USER_ID_SIZE + 1 ] = { 0, };
+	};
 #pragma pack(pop)
 
 
