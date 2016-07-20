@@ -134,6 +134,19 @@
       <Project>{db66415c-52f3-4b0f-b7ec-3cc0ce9cd643}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Common\conmanip.h" />
+    <ClInclude Include="..\..\Common\ErrorCode.h" />
+    <ClInclude Include="..\..\Common\Packet.h" />
+    <ClInclude Include="..\..\Common\PacketID.h" />
+    <ClInclude Include="Main.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Common\ServerConfig.ini" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

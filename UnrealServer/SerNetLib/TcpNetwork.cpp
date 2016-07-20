@@ -121,7 +121,7 @@ namespace NServerNetLib
 
 	void TcpNetwork::RunCheckSelectClients(fd_set& Read_set, fd_set& Write_set)
 	{
-		for (int i = 0; i < m_ClientSessionPool.size(); ++i)
+		for (int i = 0; i < static_cast<int>(m_ClientSessionPool.size()); ++i)
 		{
 			auto& Session = m_ClientSessionPool[i];
 			if (Session.IsConnected() == false)
