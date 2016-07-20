@@ -17,6 +17,7 @@ namespace NServerNetLib
 			SocketFD = 0;
 			IP[0] = '\0';
 			RemainingDataSize = 0;
+			PrevReadPosInRecvBuffer = 0;
 			SendSize = 0;
 		}
 
@@ -27,6 +28,7 @@ namespace NServerNetLib
 
 		char*	p_RecvBuffer = nullptr;
 		int		RemainingDataSize = 0;
+		int		PrevReadPosInRecvBuffer = 0;
 
 		char*	p_SendBuffer = nullptr;
 		int		SendSize = 0;

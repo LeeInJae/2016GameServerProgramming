@@ -138,6 +138,7 @@
     <ClInclude Include="ITcpNetwork.h" />
     <ClInclude Include="ClientSession.h" />
     <ClInclude Include="ServerNetErrorCode.h" />
+    <ClInclude Include="TcpNetwork.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
