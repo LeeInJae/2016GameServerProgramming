@@ -130,22 +130,25 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SerNetLib\SerNetLib.vcxproj">
-      <Project>{db66415c-52f3-4b0f-b7ec-3cc0ce9cd643}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="PacketProcess.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Common\conmanip.h" />
     <ClInclude Include="..\..\Common\ErrorCode.h" />
     <ClInclude Include="..\..\Common\Packet.h" />
     <ClInclude Include="..\..\Common\PacketID.h" />
+    <ClInclude Include="ConsoleLogger.h" />
     <ClInclude Include="Main.h" />
+    <ClInclude Include="PacketProcess.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Common\ServerConfig.ini" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ServerNetLib\ServerNetLib.vcxproj">
+      <Project>{d0babd73-2f1a-4340-8e7e-920c50237250}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
